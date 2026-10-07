@@ -1,0 +1,23 @@
+# Compilados
+*.class
+*.jar
+build/
+target/
+out/
+bin/
+dist/
+
+# IDEs
+nbproject/private/
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# Sistema
+Thumbs.db
+
+# Credenciales locales
+*.env
