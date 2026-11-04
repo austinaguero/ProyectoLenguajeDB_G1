@@ -57,4 +57,14 @@ public class Productos {
             }
         }
     }
+
+    public void consultarBajoMinimo() throws SQLException {
+        try (CallableStatement llamada = conexion.prepareCall("{call sp_consultar_productos_bajo_minimo(?)}")) {
+            llamada.registerOutParameter(1, Types.REF_CURSOR);
+            llamada.execute();
+            try (ResultSet filas = (ResultSet) llamada.getObject(1)) {
+                Consultas.mostrar(filas);
+            }
+        }
+    }
 }

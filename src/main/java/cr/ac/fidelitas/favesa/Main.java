@@ -10,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Laboratorios Fave S.A. - Avance de integración Java");
-        System.out.println("Facturación: encabezados; detalle y control de stock pendientes del paso 3.");
+        System.out.println("Facturación: encabezados, detalles, impuestos y stock integrados con Oracle.");
         try (Connection conexion = Conexion.conectar()) {
             System.out.println("Conexión correcta a Oracle.");
             int opcion;
@@ -155,19 +155,20 @@ public class Main {
 
     private static void menuFacturas(Connection conexion) throws SQLException {
         Facturas datos = new Facturas(conexion);
-        System.out.println("\nFacturas: 1. Insertar  2. Actualizar  3. Eliminar  4. Listar  5. Anular  0. Volver");
+        System.out.println("\nFacturas: 1. Insertar  2. Actualizar  3. Eliminar  4. Listar  5. Anular  6. Agregar producto  7. Consultar detalle  8. Calcular IVA y total  0. Volver");
         int accion = entero("Acción");
         switch (accion) {
             case 1:
-                datos.insertar(texto("Numero factura"), entero("ID del cliente"), entero("ID del usuario"), entero("ID del método de pago"), decimal("Subtotal"), decimal("Impuesto"), decimal("Monto total"));
+                datos.insertar(texto("Numero factura"), entero("ID del cliente"), entero("ID del usuario"), entero("ID del método de pago"));
+                System.out.println("Factura vacía creada. Use Listar para conocer su ID y Agregar producto para completarla.");
                 System.out.println("Procedimiento ejecutado. Use Listar para comprobar el resultado.");
                 break;
             case 2:
-                datos.actualizar(entero("Id factura"), texto("Numero factura"), entero("ID del cliente"), entero("ID del usuario"), entero("ID del método de pago"), decimal("Subtotal"), decimal("Impuesto"), decimal("Monto total"), texto("Estado"));
+                datos.actualizar(entero("Id factura"), texto("Numero factura"), entero("ID del cliente"), entero("ID del usuario"), entero("ID del método de pago"));
                 System.out.println("Procedimiento ejecutado. Use Listar para comprobar el resultado.");
                 break;
             case 3:
-                if (!confirmar("¿Eliminar el registro?")) { return; }
+                if (!confirmar("¿Eliminar una factura previamente anulada?")) { return; }
                 datos.eliminar(entero("Id factura"));
                 System.out.println("Procedimiento ejecutado. Use Listar para comprobar el resultado.");
                 break;
@@ -178,6 +179,18 @@ public class Main {
                 if (!confirmar("¿Anular la factura?")) { return; }
                 datos.anular(entero("ID de factura"));
                 System.out.println("Procedimiento ejecutado. Use Listar para comprobar el estado.");
+                break;
+            case 6:
+                datos.agregarDetalle(entero("ID de factura"), entero("ID de producto"), entero("Cantidad"));
+                System.out.println("Detalle registrado; Oracle actualizó los montos y el inventario.");
+                break;
+            case 7:
+                datos.consultarDetalle();
+                break;
+            case 8:
+                double subtotal = decimal("Subtotal para consultar el cálculo");
+                System.out.println("IVA: " + datos.calcularIva(subtotal));
+                System.out.println("Total: " + datos.calcularTotal(subtotal));
                 break;
             case 0: break;
             default: System.out.println("Acción incorrecta.");
@@ -238,7 +251,7 @@ public class Main {
 
     private static void menuProductos(Connection conexion) throws SQLException {
         Productos datos = new Productos(conexion);
-        System.out.println("\nProductos: 1. Insertar  2. Actualizar  3. Eliminar  4. Listar  0. Volver");
+        System.out.println("\nProductos: 1. Insertar  2. Actualizar  3. Eliminar  4. Listar  5. Productos bajo el mínimo  0. Volver");
         int accion = entero("Acción");
         switch (accion) {
             case 1:
@@ -256,6 +269,9 @@ public class Main {
                 break;
             case 4:
                 datos.listar();
+                break;
+            case 5:
+                datos.consultarBajoMinimo();
                 break;
             case 0: break;
             default: System.out.println("Acción incorrecta.");

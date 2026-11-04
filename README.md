@@ -34,12 +34,17 @@ El sistema permitirá gestionar productos, categorías, clientes, proveedores, u
 En desarrollo. Entrega 1: análisis y diseño.
 
 
-## Avance de Java — Persona 5
+## Avance de Java e integración
 
-La aplicación Java se abre como proyecto Maven en NetBeans. Incluye conexión JDBC y menú de consola para llamar a los procedimientos del equipo.
+Aplicación de consola para NetBeans con conexión JDBC y llamadas a los procedimientos del equipo. Integra el aporte de Jefferson: detalles con validación de stock, funciones de impuestos y total, consultas de vistas y anulación con devolución de inventario.
 
-Leer [la guía de instalación](docs/LEEME_PRIMERO.md), [la revisión de integración](docs/Revision_integracion.md) y [el diccionario de datos](docs/Diccionario_datos.md).
+- [Instalación y uso](docs/LEEME_PRIMERO.md).
+- [Revisión de integración](docs/Revision_integracion.md).
+- [Diccionario de datos](docs/Diccionario_datos.md).
+- [Pruebas manuales pendientes en Oracle](docs/Pruebas_manuales.md).
 
-Antes de ejecutar, copiar `config.example.properties` como `config.properties` y completar los datos locales. El Wallet y la contraseña no se suben al repositorio.
+Para un esquema que ya tiene las tablas, ejecutar `database/06_actualizar_integracion.sql`. Para uno nuevo, usar `database/00_instalacion_nueva.sql`.
 
-Este avance integra los encabezados de facturas; la lógica de detalle, impuestos calculados y stock del paso 3 sigue pendiente del aporte del equipo.
+Copiar `config.example.properties` como `config.properties` y completar los datos locales. El Wallet y la contraseña no forman parte del repositorio.
+
+La compilación y las llamadas se verifican localmente; falta comprobar la ejecución real con Oracle.

@@ -212,3 +212,21 @@ Restricciones:
 - `CONSTRAINT ck_detalle_cantidad CHECK (cantidad > 0)`
 - `CONSTRAINT ck_detalle_precio CHECK (precio_unitario > 0)`
 - `CONSTRAINT ck_detalle_subtotal CHECK (subtotal_linea > 0)`
+
+## Objetos de lógica de negocio incorporados
+
+Las columnas y restricciones de las 12 tablas no cambian.
+
+| Objeto | Tipo | Función |
+|---|---|---|
+| trg_validar_stock_factura | Trigger AFTER INSERT en detalle_factura | Valida estado y stock, descuenta cantidades y registra SALIDA |
+| fn_calcular_iva | Función NUMBER a NUMBER | Calcula impuesto con la tasa de 0.13 definida por Jefferson |
+| fn_calcular_total_factura | Función NUMBER a NUMBER | Suma subtotal e impuesto |
+| vw_detalle_facturas | Vista | Relaciona facturas, clientes, productos y detalles |
+| vw_productos_bajo_minimo | Vista | Muestra productos con stock_actual <= stock_minimo |
+| sp_anular_factura | Procedimiento, ID de factura IN | Devuelve cantidades y cambia a ANULADA |
+| sp_eliminar_factura | Procedimiento, ID de factura IN | Permite borrar solo facturas ANULADAS |
+| sp_agregar_detalle_factura | Procedimiento, factura/producto/cantidad IN | Inserta la línea y recalcula importes |
+| sp_actualizar_factura | Procedimiento, cinco parámetros IN | Actualiza datos del encabezado y recalcula importes sin cambiar estado |
+| sp_consultar_detalle_facturas | Procedimiento, cursor OUT | Consulta vw_detalle_facturas desde Java |
+| sp_consultar_productos_bajo_minimo | Procedimiento, cursor OUT | Consulta vw_productos_bajo_minimo desde Java |

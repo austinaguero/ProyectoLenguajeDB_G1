@@ -1,21 +1,21 @@
-# Pruebas manuales en Oracle y Java
+# Pruebas manuales de integración en Oracle y Java
 
-Estas pruebas requieren la cuenta del esquema y un Wallet válido. No se presentan como ejecutadas contra Oracle.
+Pendientes de ejecutar con la cuenta real del esquema. Usar datos de prueba nuevos después de instalar la lógica de negocio.
 
-1. Ejecutar los scripts de procedimientos y luego `database/05_verificar_objetos.sql`. Esperado: procedimientos VALID y ninguna fila de error para estos objetos.
-2. Configurar `config.properties` y ejecutar Main. Esperado: mensaje de conexión correcta y siete módulos.
-3. Insertar una categoría de prueba; listar; copiar su ID; actualizar su nombre; listar nuevamente. Esperado: datos correctos en ambas consultas.
-4. Insertar un proveedor válido y luego un producto que use los IDs reales de categoría y proveedor. Listar productos. Esperado: nombres de categoría y proveedor junto con precio y stock.
-5. Intentar insertar un producto con precio negativo. Esperado: Oracle rechaza el registro por CHECK; no aparece al listar.
-6. Insertar un empleado con cédula de prueba no utilizada, listar y copiar su ID. Actualizarlo y volver a listar. Esperado: se mantienen todos los datos y cambia el campo editado.
-7. Insertar un usuario asociado a ese empleado usando un hash de prueba ya calculado. Listar y comprobar nombre del empleado, username y estado; no se muestra password_hash.
-8. Insertar un cliente de prueba. Listar, actualizar y volver a listar. Esperado: cursor leído sin errores y datos actualizados.
-9. Repetir una identificación de cliente. Esperado: Oracle rechaza el duplicado por UNIQUE.
-10. Usando un método de pago existente, insertar una factura con subtotal 1000, impuesto 130 y total 1130. Listar. Esperado: encabezado con relaciones y montos ingresados. Son datos de prueba, no una validación de tasa fiscal.
-11. Actualizar la factura con la opción 2 y listar; anular con la opción 5 y listar. Esperado: valores actualizados y luego estado ANULADA. No se espera cambio automático de stock en este avance.
-12. Eliminar solo la factura de prueba, el usuario de prueba, el empleado, el cliente, el producto, el proveedor y la categoría, en ese orden. Listar para comprobar. Responder n en una confirmación y comprobar que no se borre.
-13. Intentar borrar una categoría mientras aún tiene un producto. Esperado: la FK impide el borrado.
-14. Probar un listado vacío, una entrada no numérica en el menú y volver con 0. Esperado: mensaje sin registros, solicitud de número válido y navegación correcta.
-15. Quitar temporalmente config.properties. Esperado: mensaje de configuración pendiente, sin publicar credenciales.
+1. Ejecutar database/06_actualizar_integracion.sql con F5 en el esquema que ya tiene las 12 tablas. Comprobar que los objetos estén VALID y no haya errores de compilación.
+2. Configurar config.properties y ejecutar Main. Esperado: conexión correcta y menú.
+3. Crear o consultar un producto de prueba con precio 1000, stock 10 y mínimo 5, con categoría y proveedor válidos. Preparar cliente, empleado, usuario y método de pago existentes.
+4. Crear una factura desde Java y listar. Esperado: encabezado EMITIDA con subtotal, impuesto y total cero.
+5. Agregar 2 unidades del producto a esa factura. Esperado: detalle de cantidad 2, precio unitario 1000 y subtotal de línea 2000; stock 8; movimiento SALIDA de 2 unidades; encabezado con subtotal 2000, impuesto 260 y total 2260.
+6. Consultar detalle desde el menú. Esperado: la fila de la vista con cliente, producto, cantidades e importes.
+7. Consultar el cálculo de IVA y total para 2000. Esperado: 260 y 2260, sin guardar cambios. Un subtotal negativo debe producir error.
+8. Crear otra factura vacía y tratar de agregar 9 unidades del mismo producto cuando quedan 8. Esperado: error de stock; sin nuevo detalle, sin salida y sin alteración de los importes de esa factura. El stock sigue en 8.
+9. Actualizar número o cliente de la primera factura. Esperado: se conservan los montos derivados de sus detalles y no se solicita cambiar el estado.
+10. Anular la primera factura. Esperado: estado ANULADA, stock restaurado a 10 y movimiento ENTRADA de 2. Una segunda anulación debe rechazarse, sin otra devolución.
+11. Intentar actualizar o agregar un producto a esa factura anulada. Esperado: rechazo sin cambio de estado ni stock.
+12. Intentar eliminar la segunda factura mientras está EMITIDA. Esperado: error que exige anular primero. Anularla y eliminarla para limpiar esa prueba.
+13. Eliminar la primera factura que ya fue anulada. Esperado: se eliminan encabezado y detalles, pero el stock continúa en 10.
+14. Para comprobar la vista bajo el mínimo, crear una factura nueva y vender 5 unidades del producto. Esperado: stock 5 e inclusión en la vista, pues Jefferson usa <=. Anularla; esperado: stock 10 y ya no aparece si el mínimo sigue en 5.
+15. Mantener las pruebas previas de empleados, usuarios, clientes, productos, categorías y proveedores: insertar, listar, actualizar y eliminar respetando las FK; duplicados UNIQUE y valores negativos CHECK deben rechazarse.
 
-Registrar las capturas reales después de ejecutar estas pruebas. La validación de stock, IVA calculado y vistas se añadirá con la lógica de Persona 4.
+Capturas útiles: objetos VALID, factura con detalle e importes, rechazo por stock insuficiente, anulación con devolución y consulta de productos bajo el mínimo. Registrar resultados reales después de ejecutar las pruebas; no se proporcionan capturas simuladas como evidencia.
