@@ -21,3 +21,14 @@ Thumbs.db
 
 # Credenciales locales
 *.env
+
+# Configuración y credenciales Oracle
+config.properties
+Wallet*/
+wallet*/
+*.sso
+*.p12
+*.jks
+*.pem
+Wallet*.zip
+wallet*.zip
